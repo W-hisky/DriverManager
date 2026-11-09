@@ -12,3 +12,4 @@ settings.json
 last_auto_scan.json
 build/
 dist/
+.focus_request
