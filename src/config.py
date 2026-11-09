@@ -31,7 +31,7 @@ FROZEN = bool(getattr(sys, "frozen", False))
 def app_command(*args: str, windowed: bool = True) -> tuple[str, list[str]]:
     """Programma e argomenti per avviare DriverCore (GUI, o con --auto-scan il controllo automatico).
 
-    Da .exe Ã¨ l'eseguibile stesso; da sorgente Ã¨ pythonw/python del venv con gui.py.
+    Da .exe è l'eseguibile stesso; da sorgente è pythonw/python del venv con gui.py.
     """
     if FROZEN:
         return sys.executable, list(args)
@@ -44,7 +44,7 @@ BASE_DIR = Path(os.environ.get("DRIVERCORE_HOME", "C:/DriverManager"))
 BACKUP_ROOT = BASE_DIR / "backups"
 DOWNLOAD_DIR = BASE_DIR / "downloads"
 CAB_DIR = DOWNLOAD_DIR / "cab_temp"
-# Pacchetti del Catalog scaricati per la verifica (riusati per l'installazione) e verdetti giÃ  calcolati
+# Pacchetti del Catalog scaricati per la verifica (riusati per l'installazione) e verdetti già calcolati
 CATALOG_PKG_DIR = DOWNLOAD_DIR / "catalog"
 VERDICTS_FILE = BASE_DIR / "package_verdicts.json"
 LOG_DIR = BASE_DIR / "logs"
