@@ -22,10 +22,11 @@
   "20": "single_instance.py",
   "21": "ModernEventInterceptor",
   "22": "Client",
-  "23": "ignore_list.py",
+  "23": "Switch",
   "24": "SmoothScrollFrame",
   "25": "Path",
   "26": "config.py",
-  "27": "driver_scanner.py",
-  "28": "._ask_yes_no"
+  "27": "ScanBar",
+  "28": "._task_full_scan",
+  "29": "test_wu.py"
 }

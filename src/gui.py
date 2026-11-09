@@ -79,6 +79,7 @@ try:
     import diagnostics
     import updater
     import ignore_list
+    import uninstaller
     from ignore_list import load_ignored_updates
     import _tkinter
     import tkinter as tk
@@ -136,6 +137,7 @@ try:
         "accent_ink": "#1A5FCC",  # testo blu: 4,5:1 anche sulle righe evidenziate
         "ok_bg": "#E6F4EA", "ok_ink": "#17703A", "warn_bg": "#FDF0E1", "warn_ink": "#9A4B00",
         "toast": "#1C1C1F", "toast_text2": "#C7C7CC", "seg_on": "#FFFFFF",
+        "danger_ink": "#B42318", "danger_bg": "#FCE8E6",
     }
     # Stessi ruoli al buio: superfici appena più chiare dello sfondo, testo non bianco puro, accento più luminoso
     C_DARK = {
@@ -146,6 +148,7 @@ try:
         "accent_ink": "#6AA6FF",  # al buio il testo blu deve essere più chiaro dei pulsanti (6,8:1)
         "ok_bg": "#15301F", "ok_ink": "#5CD083", "warn_bg": "#36280F", "warn_ink": "#F2B65E",
         "toast": "#2B2B30", "toast_text2": "#B9B9C0", "seg_on": "#3A3A41",
+        "danger_ink": "#FF8A80", "danger_bg": "#3A2224",
     }
     THEMES = ("auto", "light", "dark")
 
@@ -225,6 +228,14 @@ try:
     def fmt_when(d) -> str:
         """'9 nov 10:02' / 'Nov 9 10:02'."""
         return f"{fmt_day_month(d)} {d:%H:%M}"
+
+    def fmt_bytes(n: int) -> str:
+        """1536 -> '1,5 KB' / '1.5 KB' (separatore decimale della lingua)."""
+        for unit, size in (("GB", 2 ** 30), ("MB", 2 ** 20), ("KB", 2 ** 10)):
+            if n >= size:
+                text = f"{n / size:.1f} {unit}"
+                return text.replace(".", ",") if LANG == "it" else text
+        return f"{n} B"
 
     def verify_line(item: dict) -> tuple[str, str]:
         """(testo, colore) dell'esito della verifica del pacchetto."""
@@ -1071,6 +1082,18 @@ try:
                 if updater.due(prefs.get("update_checked")):
                     self.after(4000, lambda: self._check_update(quiet=True))
 
+            # Disinstallazione: in fondo, staccata dal resto
+            self._sep(box).grid(row=12, column=0, columnspan=2, sticky="ew", pady=18)
+            self._label(box, tr("Disinstalla DriverCore"), 15, "semibold").grid(row=13, column=0, sticky="w")
+            self._label(box, tr("Rimuove DriverCore da questo PC senza lasciare tracce. I driver installati restano."),
+                        13, "regular", C["text2"], wraplength=520).grid(row=14, column=0, sticky="w", pady=(2, 0))
+            self.btn_uninstall = ctk.CTkButton(
+                box, text=tr("Disinstalla…"), height=36, corner_radius=18, fg_color=C["hover"],
+                hover_color=C["danger_bg"], text_color=C["danger_ink"], font=self.F(13, "semibold"),
+                command=self._on_uninstall,
+            )
+            self.btn_uninstall.grid(row=13, column=1, rowspan=2, padx=(16, 0), sticky="e")
+
         def _on_theme_change(self, label: str):
             value = next(k for k, v in THEME_LABELS.items() if v == label)
             try:
@@ -1157,6 +1180,39 @@ try:
                 updater.apply_and_restart(new_exe)
                 self.after(300, self.destroy)  # lo script sostituisce il file appena il programma si chiude
             self.run_in_background(task, tr("Aggiornamento di DriverCore"))
+
+        def _on_uninstall(self):
+            if self.is_busy:
+                self.show_toast(tr("Operazione in corso"), tr("Attendi che finisca, poi riprova."), "warning")
+                return
+            items = uninstaller.data_paths()
+            backups = [p for p in items if p.name == "backups"]
+            size = uninstaller.size_of(backups)
+            lines = [
+                tr("DriverCore verrà rimosso da questo PC, insieme a:"),
+                "• " + tr("backup dei driver ({size})", size=fmt_bytes(size)),
+                "• " + tr("download, log, cronologia e impostazioni"),
+                "• " + tr("controllo automatico, notifiche e voci nel registro"),
+            ]
+            lines.append("• " + (Path(sys.executable).name if FROZEN
+                                 else tr("(avviato dal codice sorgente: i file del programma restano)")))
+            lines += ["", tr("I driver installati e i punti di ripristino di Windows restano. Senza i backup non "
+                             "potrai più annullare gli aggiornamenti fatti con DriverCore."),
+                      "", tr("L'operazione non si può annullare. Procedere?")]
+            if not messagebox.askyesno(tr("Disinstalla DriverCore"), "\n".join(lines), icon="warning", default="no"):
+                return
+
+            def task():
+                errors = uninstaller.uninstall()
+                self.after(0, lambda: self._uninstall_done(errors))
+            self.run_in_background(task, tr("Disinstallazione di DriverCore"))
+
+        def _uninstall_done(self, errors: list[str]):
+            text = tr("DriverCore è stato disinstallato. I file rimasti verranno cancellati alla chiusura.")
+            if errors:
+                text += "\n\n" + tr("Non è stato possibile rimuovere:") + "\n" + "\n".join(errors)
+            messagebox.showinfo(tr("Disinstalla DriverCore"), text)
+            self.destroy()
 
         def _on_language_change(self, label: str):
             value = next(k for k, v in LANG_LABELS.items() if v == label)

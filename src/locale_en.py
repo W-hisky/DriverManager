@@ -508,6 +508,29 @@ EN = {
     "Rifiutato da Windows": "Rejected by Windows",
     "Ripristina": "Restore",
 
+    # --- Disinstallazione ---
+    "Disinstalla DriverCore": "Uninstall DriverCore",
+    "Rimuove DriverCore da questo PC senza lasciare tracce. I driver installati restano.":
+        "Removes DriverCore from this PC without leaving a trace. Installed drivers stay.",
+    "Disinstalla…": "Uninstall…",
+    "Attendi che finisca, poi riprova.": "Wait for it to finish, then try again.",
+    "DriverCore verrà rimosso da questo PC, insieme a:": "DriverCore will be removed from this PC, along with:",
+    "backup dei driver ({size})": "driver backups ({size})",
+    "download, log, cronologia e impostazioni": "downloads, logs, history and settings",
+    "controllo automatico, notifiche e voci nel registro": "automatic check, notifications and registry entries",
+    "(avviato dal codice sorgente: i file del programma restano)":
+        "(running from source code: the program files stay)",
+    "I driver installati e i punti di ripristino di Windows restano. Senza i backup non "
+    "potrai più annullare gli aggiornamenti fatti con DriverCore.":
+        "Installed drivers and Windows restore points stay. Without the backups you won't be able to undo "
+        "updates made with DriverCore.",
+    "L'operazione non si può annullare. Procedere?": "This can't be undone. Continue?",
+    "Disinstallazione di DriverCore": "Uninstalling DriverCore",
+    "DriverCore è stato disinstallato. I file rimasti verranno cancellati alla chiusura.":
+        "DriverCore has been uninstalled. The remaining files will be deleted when it closes.",
+    "Non è stato possibile rimuovere:": "Could not remove:",
+    "attività pianificata: {error}": "scheduled task: {error}",
+
     # --- Tema, diagnostica, aggiornamenti di DriverCore ---
     "Automatico": "Automatic",
     "Chiaro": "Light",

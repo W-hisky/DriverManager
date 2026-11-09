@@ -30,9 +30,9 @@
     "semantic_hash": ""
   },
   "src/gui.py": {
-    "mtime": 1794230646.1747885,
-    "seen": 1794231179.319583,
-    "ast_hash": "0012bfc0d7a1d12c84c4c7b252c33e7f",
+    "mtime": 1794231492.5310507,
+    "seen": 1794231998.2087934,
+    "ast_hash": "2cfcb5cc2594102afce7d8109131ec3d",
     "semantic_hash": ""
   },
   "src/main.py": {
@@ -102,9 +102,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1794225539.2533064,
-    "seen": 1794225556.7671592,
-    "ast_hash": "cdb91819004019c4a64fbfc3c734930f",
+    "mtime": 1794231953.5508966,
+    "seen": 1794231998.2087934,
+    "ast_hash": "d62dccacd5ff1b20c8365a43a31d93c7",
     "semantic_hash": ""
   },
   "requirements-dev.txt": {
@@ -144,9 +144,9 @@
     "semantic_hash": ""
   },
   "src/locale_en.py": {
-    "mtime": 1794226883.353438,
-    "seen": 1794226999.636035,
-    "ast_hash": "87ac749b84f4df6efecf4343a5dc72cb",
+    "mtime": 1794231506.3555758,
+    "seen": 1794231998.2087934,
+    "ast_hash": "0cfed944e8070513b8c9109d218e8b93",
     "semantic_hash": ""
   },
   "tests/test_i18n.py": {
@@ -204,15 +204,27 @@
     "semantic_hash": ""
   },
   "src/updater.py": {
-    "mtime": 1794226883.3550227,
-    "seen": 1794226999.636035,
-    "ast_hash": "71b22099eaf89c391dd9e4d278a82ea5",
+    "mtime": 1794231920.535643,
+    "seen": 1794231998.2087934,
+    "ast_hash": "20bc32b91799bc5a2d56b0f4d5d80bae",
     "semantic_hash": ""
   },
   "tests/test_updater.py": {
-    "mtime": 1794225538.4674087,
-    "seen": 1794225556.7671592,
-    "ast_hash": "7dd71015d116cfc545ffc735a28efa4f",
+    "mtime": 1794231621.928772,
+    "seen": 1794231998.2087934,
+    "ast_hash": "421332e4bf724a8ad241a862a46e304c",
+    "semantic_hash": ""
+  },
+  "src/uninstaller.py": {
+    "mtime": 1794231815.7133462,
+    "seen": 1794231998.2087934,
+    "ast_hash": "7e7115afe496b6bebfdcc70d2dffe83f",
+    "semantic_hash": ""
+  },
+  "tests/test_uninstaller.py": {
+    "mtime": 1794231530.11706,
+    "seen": 1794231998.2087934,
+    "ast_hash": "29411037fd0750d0003299d46a0840ba",
     "semantic_hash": ""
   }
 }

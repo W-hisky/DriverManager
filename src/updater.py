@@ -22,7 +22,6 @@ from config import APP_VERSION, DOWNLOAD_DIR, FROZEN, UPDATE_MANIFEST_URL
 from i18n import tr
 
 NO_WIN = getattr(subprocess, "CREATE_NO_WINDOW", 0)
-DETACHED = 0x00000008  # DETACHED_PROCESS: lo script sopravvive alla chiusura di DriverCore
 UPDATE_DIR = DOWNLOAD_DIR / "update"
 CHECK_EVERY_S = 24 * 3600
 _SHA256 = re.compile(r"^[0-9a-fA-F]{64}$")
@@ -145,15 +144,32 @@ SWAP_PS = (
 )
 
 
+NEW_GROUP = 0x00000200      # CREATE_NEW_PROCESS_GROUP: Ctrl+C/chiusura della console del padre non lo toccano
+BREAKAWAY = 0x01000000      # CREATE_BREAKAWAY_FROM_JOB: sopravvive anche se il padre è in un job che chiude i figli
+
+
+def launch_after_exit(script: str, env: dict) -> subprocess.Popen:
+    """PowerShell nascosto che continua a girare dopo la chiusura di DriverCore.
+
+    Niente DETACHED_PROCESS: senza console PowerShell 5.1 esce subito senza eseguire lo script (verificato).
+    """
+    cmd = ["powershell.exe", "-NoProfile", "-NonInteractive", "-WindowStyle", "Hidden", "-Command", script]
+    full_env = {**os.environ, **env}
+    # mai la cartella dei dati come cartella di lavoro (la GUI ci fa chdir): resterebbe bloccata e non si cancella
+    kw = {"close_fds": True, "env": full_env, "cwd": os.environ.get("SystemRoot", r"C:\Windows")}
+    try:
+        return subprocess.Popen(cmd, creationflags=NO_WIN | NEW_GROUP | BREAKAWAY, **kw)
+    except OSError:  # job che non permette di uscirne: basta che il padre non lo chiuda
+        return subprocess.Popen(cmd, creationflags=NO_WIN | NEW_GROUP, **kw)
+
+
 def apply_and_restart(new_exe: Path) -> None:
     """Avvia lo scambio dei file e ritorna: il chiamante deve chiudere DriverCore subito dopo."""
     if not FROZEN:
         raise UpdateError(tr("l'aggiornamento automatico funziona solo con DriverCore.exe"))
     # Nel .exe a file unico il file è tenuto aperto dal processo padre (quello che scompatta): si aspettano entrambi
     pids = f"{os.getpid()},{os.getppid()}"
-    subprocess.Popen(["powershell.exe", "-NoProfile", "-WindowStyle", "Hidden", "-Command", SWAP_PS],
-                     creationflags=NO_WIN | DETACHED, close_fds=True,
-                     env={**os.environ, "DC_PIDS": pids, "DC_NEW": str(new_exe), "DC_OLD": sys.executable})
+    launch_after_exit(SWAP_PS, {"DC_PIDS": pids, "DC_NEW": str(new_exe), "DC_OLD": sys.executable})
 
 
 def due(last_check: float | None, now: float | None = None) -> bool:

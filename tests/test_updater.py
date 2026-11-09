@@ -83,6 +83,29 @@ def test_build_manifest_matches_exe(tmp_path, monkeypatch):
         build.write_manifest(exe)
 
 
+@pytest.mark.skipif(__import__("sys").platform != "win32", reason="solo Windows")
+def test_swap_runs_after_parent_exits(tmp_path):
+    """Lo script parte da un processo che si chiude subito (come DriverCore) e deve comunque scambiare i file."""
+    import subprocess
+    import sys
+    import time
+    new, old = tmp_path / "new.exe", tmp_path / "old.exe"
+    new.write_bytes(b"NEW")
+    old.write_bytes(b"OLD")
+    marker = tmp_path / "riavviato.txt"
+    ps = updater.SWAP_PS.replace("Start-Process -FilePath $env:DC_OLD", f"'ok' | Out-File -LiteralPath '{marker}'")
+    src = str(updater.Path(updater.__file__).parent)
+    parent = (f"import sys, os, time; sys.path.insert(0, {src!r}); import updater; "
+              f"updater.launch_after_exit({ps!r}, {{'DC_PIDS': str(os.getpid()), 'DC_NEW': {str(new)!r}, "
+              f"'DC_OLD': {str(old)!r}}}); f = open({str(old)!r}, 'rb'); time.sleep(1)")  # file in uso, poi esce
+    subprocess.run([sys.executable, "-c", parent], check=True, timeout=60)
+    for _ in range(100):
+        if marker.exists():
+            break
+        time.sleep(0.2)
+    assert old.read_bytes() == b"NEW" and not new.exists() and marker.exists()
+
+
 def test_due_once_a_day():
     assert updater.due(None)
     assert not updater.due(1000.0, now=1000.0 + 3600)

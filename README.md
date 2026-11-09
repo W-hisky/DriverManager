@@ -55,7 +55,19 @@ la variabile `DRIVERCORE_UPDATE_URL`:
 «Esporta diagnostica» (card Impostazioni) crea uno zip con log, impostazioni, cronologia, aggiornamenti ignorati
 e un riepilogo del sistema (Windows, CPU, RAM, schede video, driver di terze parti). Nessun file personale.
 
+## Disinstallazione
+«Disinstalla…» (in fondo alla card Impostazioni) rimuove DriverCore senza lasciare tracce:
+- i dati in `C:\DriverManager` (backup dei driver, download, log, cronologia, impostazioni). Si cancella solo ciò
+  che crea DriverCore: se nella cartella c'è altro (es. il codice sorgente) quello resta, altrimenti sparisce anche la cartella;
+- l'attività «Controllo driver» e la cartella `\DriverCore\` dell'Utilità di pianificazione;
+- le chiavi in `HKCU` (notifiche, protocollo `drivercore://`) e lo storico delle notifiche;
+- le tracce che Windows associa all'eseguibile (MuiCache, Compatibility Assistant, Prefetch) e `DriverCore.exe` stesso.
+
+I file si cancellano subito dopo la chiusura del programma. Restano i driver installati e i punti di ripristino
+di Windows: appartengono al sistema.
+
 ## Moduli
+- `uninstaller.py` – disinstallazione completa
 - `updater.py` – aggiornamento automatico di DriverCore.exe (manifest, verifica SHA-256 e firma, sostituzione)
 - `diagnostics.py` – esportazione della diagnostica in un file zip
 - `prefs.py` – preferenze dell'utente in settings.json
