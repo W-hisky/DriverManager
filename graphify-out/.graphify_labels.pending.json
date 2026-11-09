@@ -7,7 +7,7 @@
   "5": "gui.py",
   "6": "gpu_check.py",
   "7": "auto_scan.py",
-  "8": "._intro",
+  "8": "mix",
   "9": "deep_catalog.py",
   "10": "inf_rank.py",
   "11": "SmoothScrollFrame",
@@ -25,8 +25,11 @@
   "23": "Tween",
   "24": "ModernEventInterceptor",
   "25": "Path",
-  "26": "config.py",
-  "27": "Path",
-  "28": "prefs.py",
-  "29": "Switch"
+  "26": "uninstaller.py",
+  "27": "driver_installer.py",
+  "28": "uninstall",
+  "29": "subprocess",
+  "30": "i18n.py",
+  "31": "test_auto_scan.py",
+  "32": "Popen"
 }

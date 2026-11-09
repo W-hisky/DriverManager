@@ -14,6 +14,7 @@ from pathlib import Path
 
 from auto_scan import AUMID, PROTOCOL, TASK_NAME, TASK_PATH
 from config import BASE_DIR, FROZEN
+from driver_installer import disk_size
 from i18n import tr
 
 NO_WIN = getattr(subprocess, "CREATE_NO_WINDOW", 0)
@@ -41,17 +42,29 @@ def data_paths(base: Path = BASE_DIR) -> list[Path]:
 
 
 def size_of(paths) -> int:
+    """Spazio davvero occupato: i file collegati tra backup (hard link) contano una volta, al netto della compressione."""
     total = 0
+    seen: set[tuple[int, int]] = set()
+
+    def add(f: Path) -> None:
+        nonlocal total
+        try:
+            st = f.stat()
+            key = (st.st_dev, st.st_ino)
+            if key in seen:
+                return
+            seen.add(key)
+            total += disk_size(f)
+        except OSError:
+            pass
+
     for p in paths:
         if p.is_file():
-            total += p.stat().st_size
+            add(p)
             continue
         for root, _dirs, files in os.walk(p):
             for f in files:
-                try:
-                    total += os.path.getsize(os.path.join(root, f))
-                except OSError:
-                    pass
+                add(Path(root) / f)
     return total
 
 

@@ -1,4 +1,5 @@
 from datetime import datetime
+import shutil
 
 import httpx
 
@@ -263,6 +264,22 @@ def test_backups_to_prune(tmp_path):
     assert [b.name for b in backups] == ["backup_20260101_100000", "backup_20260201_100000", "backup_20260301_100000"]
     assert [b.name for b in di.backups_to_prune(backups, 2)] == ["backup_20260101_100000"]
     assert di.backups_to_prune(backups, 5) == []
+
+
+def test_link_duplicates_shares_identical_files(tmp_path):
+    old, new = tmp_path / "backup_20260101_100000", tmp_path / "backup_20260201_100000"
+    for b, text in ((old, "vecchio"), (new, "nuovo")):
+        (b / "pkg.inf_amd64_x").mkdir(parents=True)
+        (b / "pkg.inf_amd64_x" / "same.sys").write_bytes(b"x" * 1000)
+        (b / "pkg.inf_amd64_x" / "diff.dll").write_text(text)
+    assert di.link_duplicates(new, [old]) == (1, 1000)
+    assert (new / "pkg.inf_amd64_x" / "same.sys").samefile(old / "pkg.inf_amd64_x" / "same.sys")
+    assert not (new / "pkg.inf_amd64_x" / "diff.dll").samefile(old / "pkg.inf_amd64_x" / "diff.dll")
+    assert di.link_duplicates(new, [old]) == (0, 0)  # già collegati
+    # Eliminare il vecchio backup non tocca quello nuovo; conta solo lo spazio non condiviso
+    assert di.folder_disk_size(old, only_unshared=True) == di.disk_size(old / "pkg.inf_amd64_x" / "diff.dll")
+    shutil.rmtree(old)
+    assert (new / "pkg.inf_amd64_x" / "same.sys").read_bytes() == b"x" * 1000
 
 
 def test_driverstore_fingerprint_changes_with_drivers(tmp_path):

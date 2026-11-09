@@ -175,6 +175,9 @@ EN = {
     "Verifica e attivazione MSI Low-Latency Mode sulla GPU...": "Checking and enabling MSI low-latency mode on the GPU...",
     "Ripristino non riuscito da {name} (codice {returncode}).": "Restore from {name} failed (code {returncode}).",
     "Rimosso vecchio backup {name} ({value:.1f} GB).": "Removed old backup {name} ({value:.1f} GB).",
+    "{count} file uguali al backup precedente: non duplicati.": "{count} files identical to the previous backup: not duplicated.",
+    "Compressione del backup...": "Compressing the backup...",
+    "Spazio usato da questo backup: {value:.2f} GB.": "Space used by this backup: {value:.2f} GB.",
     "Nessun driver cambiato dall'ultimo backup ({name}): resta valido.":
         "No drivers changed since the last backup ({name}): it is still valid.",
     "Backup completato con successo ({count} riferimenti elaborati).": "Backup completed ({count} entries processed).",

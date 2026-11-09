@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 
@@ -23,6 +24,14 @@ def test_size_of(tmp_path):
     (tmp_path / "b" / "x" / "f.inf").write_bytes(b"a" * 1000)
     (tmp_path / "s.json").write_bytes(b"b" * 24)
     assert uninstaller.size_of([tmp_path / "b", tmp_path / "s.json"]) == 1024
+
+
+def test_size_of_counts_hard_links_once(tmp_path):
+    (tmp_path / "b1").mkdir()
+    (tmp_path / "b2").mkdir()
+    (tmp_path / "b1" / "same.sys").write_bytes(b"x" * 1000)
+    os.link(tmp_path / "b1" / "same.sys", tmp_path / "b2" / "same.sys")
+    assert uninstaller.size_of([tmp_path / "b1", tmp_path / "b2"]) == 1000
 
 
 @win

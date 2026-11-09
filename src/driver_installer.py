@@ -1,4 +1,6 @@
-﻿import json
+﻿import ctypes
+import filecmp
+import json
 import os
 import re
 import shutil
@@ -60,6 +62,93 @@ def _read_manifest(backup_dir: Path) -> list[str] | None:
         return None
 
 
+_kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+_kernel32.GetCompressedFileSizeW.restype = ctypes.c_ulong
+_kernel32.GetCompressedFileSizeW.argtypes = (ctypes.c_wchar_p, ctypes.POINTER(ctypes.c_ulong))
+
+
+def disk_size(path: Path) -> int:
+    """Byte occupati davvero sul disco (dopo la compressione di Windows); se non si riesce, la dimensione."""
+    high = ctypes.c_ulong(0)
+    ctypes.set_last_error(0)
+    low = _kernel32.GetCompressedFileSizeW(str(path), ctypes.byref(high))
+    if low == 0xFFFFFFFF and ctypes.get_last_error():
+        return path.stat().st_size
+    return (high.value << 32) + low
+
+
+def _same_file(a: Path, b: Path) -> bool:
+    sa, sb = a.stat(), b.stat()
+    if (sa.st_ino, sa.st_dev) == (sb.st_ino, sb.st_dev):
+        return True
+    return sa.st_size == sb.st_size and filecmp.cmp(a, b, shallow=False)
+
+
+def link_duplicates(target: Path, older: list[Path]) -> tuple[int, int]:
+    """Sostituisce i file uguali a quelli dei backup precedenti con collegamenti fisici (hard link).
+
+    pnputil riesporta ogni volta tutti i driver, quasi sempre identici: così ogni pacchetto
+    occupa spazio una volta sola. I collegamenti sono file normali per chi legge (ripristino,
+    annullamento) ed eliminare un backup non tocca gli altri. Ritorna (file collegati, byte risparmiati).
+    """
+    linked = saved = 0
+    for f in target.rglob("*"):
+        if not f.is_file() or f.name == MANIFEST_NAME:
+            continue
+        rel = f.relative_to(target)
+        for prev in reversed(older):  # dal più recente
+            p = prev / rel
+            try:
+                if not p.is_file() or not _same_file(f, p):
+                    continue
+                if not f.samefile(p):
+                    tmp = f.with_name(f.name + ".dclink")
+                    os.link(p, tmp)
+                    try:
+                        os.replace(tmp, f)
+                    except OSError:
+                        tmp.unlink(missing_ok=True)  # es. file in uso: niente collegamento rimasto a metà
+                        raise
+                    linked += 1
+                    saved += p.stat().st_size
+            except OSError:
+                pass  # es. altro disco o limite di collegamenti: il file resta una copia
+            break
+    return linked, saved
+
+
+def compress_folder(folder: Path) -> bool:
+    """Compressione trasparente di Windows (LZX, circa 1/3): i file restano leggibili come prima."""
+    try:
+        res = subprocess.run(["compact", "/c", f"/s:{folder}", "/i", "/q", "/exe:lzx"],
+                             capture_output=True, creationflags=NO_WIN)
+        return res.returncode == 0
+    except OSError:
+        return False
+
+
+def folder_disk_size(folder: Path, only_unshared: bool = False) -> int:
+    """Spazio occupato; con only_unshared conta solo i file che non sono collegati ad altri backup."""
+    total = 0
+    for f in folder.rglob("*"):
+        try:
+            if f.is_file() and (not only_unshared or f.stat().st_nlink <= 1):
+                total += disk_size(f)
+        except OSError:
+            pass
+    return total
+
+
+def optimize_backup(target: Path, older: list[Path]) -> None:
+    linked, _ = link_duplicates(target, older)
+    if linked:
+        console.print("[dim] -> " + tr("{count} file uguali al backup precedente: non duplicati.", count=linked) + "[/dim]")
+    console.print("[dim] -> " + tr("Compressione del backup...") + "[/dim]")
+    compress_folder(target)
+    console.print("[dim] -> " + tr("Spazio usato da questo backup: {value:.2f} GB.",
+                                   value=folder_disk_size(target, only_unshared=True) / (1024 ** 3)) + "[/dim]")
+
+
 def prune_old_backups(keep: int = BACKUP_KEEP) -> None:
     backups = list_backups()
     prunable = backups_to_prune(backups, keep)
@@ -69,7 +158,7 @@ def prune_old_backups(keep: int = BACKUP_KEEP) -> None:
         if old in needed:
             console.print("[dim] -> " + tr("Backup {name} conservato: serve per annullare un aggiornamento.", name=old.name) + "[/dim]")
             continue
-        size = sum(f.stat().st_size for f in old.rglob("*") if f.is_file())
+        size = folder_disk_size(old, only_unshared=True)  # i file collegati ad altri backup restano
         shutil.rmtree(old, ignore_errors=True)
         console.print("[dim] -> " + tr("Rimosso vecchio backup {name} ({value:.1f} GB).", name=old.name, value=size / (1024 ** 3)) + "[/dim]")
 
@@ -117,6 +206,7 @@ def backup_current_drivers() -> bool:
             return False
 
         (target_dir / MANIFEST_NAME).write_text(json.dumps(fingerprint), encoding="utf-8")
+        optimize_backup(target_dir, [d for d in list_backups() if d != target_dir])
         console.print("[bold green]✔ " + tr("Backup completato con successo ({count} riferimenti elaborati).", count=count) + "[/bold green]")
         prune_old_backups()
         return True
