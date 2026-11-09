@@ -13,6 +13,11 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+# La console di Windows usa cp1252, che non ha simboli come ✔: senza questo il build si ferma su una print
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "src"
 BUILD = ROOT / "build"
