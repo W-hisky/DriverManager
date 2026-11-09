@@ -1,0 +1,347 @@
+{
+  "communities": {
+    "0": [
+      "httpx",
+      "packaging",
+      "rich_console",
+      "rich_panel",
+      "rich_prompt",
+      "rich_table",
+      "src_driver_cleanup",
+      "src_driver_cleanup_dism_component_cleanup",
+      "src_driver_cleanup_find_obsolete_driver_packages",
+      "src_driver_cleanup_list_driver_packages",
+      "src_driver_cleanup_rationale_1",
+      "src_driver_cleanup_rationale_102",
+      "src_driver_cleanup_rationale_122",
+      "src_driver_cleanup_rationale_145",
+      "src_driver_cleanup_rationale_38",
+      "src_driver_cleanup_remove_obsolete_driver_packages",
+      "src_driver_installer_download_file",
+      "src_driver_installer_install_windows_update_drivers",
+      "src_driver_installer_rationale_158",
+      "src_driver_installer_rationale_286",
+      "src_driver_installer_rationale_313",
+      "src_driver_installer_update_game_runtimes",
+      "src_driver_scanner",
+      "src_driver_scanner_check_nvidia_update",
+      "src_driver_scanner_check_windows_update_drivers",
+      "src_driver_scanner_list_third_party_drivers",
+      "src_driver_scanner_rationale_12",
+      "src_driver_scanner_wmi_to_nvidia_version",
+      "src_gui_drivermanagergui_task_cleanup_driverstore",
+      "src_main",
+      "src_main_ensure_admin",
+      "src_main_main",
+      "sys",
+      "win32com_client",
+      "wmi"
+    ],
+    "1": [
+      "src_driver_installer_clean_gpu_shader_cache",
+      "src_driver_installer_create_system_restore_point",
+      "src_driver_installer_rationale_358",
+      "src_driver_installer_rationale_377",
+      "src_gui_drivermanagergui",
+      "src_gui_drivermanagergui_animate_scanner",
+      "src_gui_drivermanagergui_ask_yes_no",
+      "src_gui_drivermanagergui_ask_yes_no_ask",
+      "src_gui_drivermanagergui_build_fullwidth_peripherals_view",
+      "src_gui_drivermanagergui_build_real_buttons",
+      "src_gui_drivermanagergui_draw_scanner_bar",
+      "src_gui_drivermanagergui_draw_typography",
+      "src_gui_drivermanagergui_init",
+      "src_gui_drivermanagergui_on_install_selected",
+      "src_gui_drivermanagergui_on_update_gpu",
+      "src_gui_drivermanagergui_refresh_counter",
+      "src_gui_drivermanagergui_refresh_toggles_ui",
+      "src_gui_drivermanagergui_run_in_background",
+      "src_gui_drivermanagergui_run_in_background_wrapper",
+      "src_gui_drivermanagergui_select_and_restore_backup",
+      "src_gui_drivermanagergui_set_busy",
+      "src_gui_drivermanagergui_show_toast",
+      "src_gui_drivermanagergui_show_toast_step_anim",
+      "src_gui_drivermanagergui_task_full_scan",
+      "src_gui_drivermanagergui_task_install_peripherals",
+      "src_gui_drivermanagergui_task_update_nvidia",
+      "src_gui_drivermanagergui_toggle",
+      "src_gui_drivermanagergui_update_live_subtitle",
+      "src_gui_drivermanagergui_update_nvidia_ui",
+      "src_gui_drivermanagergui_update_peripherals_ui",
+      "src_gui_rationale_252",
+      "src_gui_rationale_710",
+      "src_gui_rationale_752",
+      "src_gui_rationale_774"
+    ],
+    "2": [
+      "tests_test_core",
+      "tests_test_core_client",
+      "tests_test_core_client_handler",
+      "tests_test_core_info",
+      "tests_test_core_pkg",
+      "tests_test_core_row",
+      "tests_test_core_table_client",
+      "tests_test_core_table_client_handler",
+      "tests_test_core_test_architecture_and_provider_helpers",
+      "tests_test_core_test_backups_to_prune",
+      "tests_test_core_test_catalog_already_up_to_date",
+      "tests_test_core_test_catalog_found_picks_newer_only",
+      "tests_test_core_test_catalog_no_results_is_ok_but_errors_are_not",
+      "tests_test_core_test_catalog_only_foreign_packages_is_not_relevant",
+      "tests_test_core_test_catalog_skips_other_architectures_and_vendors",
+      "tests_test_core_test_check_device_falls_back_to_generic_when_subsys_unknown",
+      "tests_test_core_test_check_device_prefers_subsys_and_never_falls_back_when_known",
+      "tests_test_core_test_dates",
+      "tests_test_core_test_driverstore_fingerprint_changes_with_drivers",
+      "tests_test_core_test_extract_generic_hwid",
+      "tests_test_core_test_extract_specific_hwid",
+      "tests_test_core_test_ignored_update_is_skipped_without_falling_back_to_generic",
+      "tests_test_core_test_ignored_updates_roundtrip",
+      "tests_test_core_test_ignored_version_hides_all_catalog_ids_of_same_driver",
+      "tests_test_core_test_published_driver_names",
+      "tests_test_core_test_select_obsolete",
+      "tests_test_core_test_select_obsolete_keeps_newest_not_highest_oem_number",
+      "tests_test_core_test_subject_organization",
+      "tests_test_core_test_wmi_to_nvidia_version"
+    ],
+    "3": [
+      "path",
+      "shutil",
+      "src_driver_installer",
+      "src_driver_installer_backup_current_drivers",
+      "src_driver_installer_backups_to_prune",
+      "src_driver_installer_driverstore_fingerprint",
+      "src_driver_installer_enable_gpu_msi_mode",
+      "src_driver_installer_install_nvidia_driver",
+      "src_driver_installer_list_backups",
+      "src_driver_installer_prune_old_backups",
+      "src_driver_installer_rationale_121",
+      "src_driver_installer_rationale_129",
+      "src_driver_installer_rationale_205",
+      "src_driver_installer_rationale_25",
+      "src_driver_installer_rationale_405",
+      "src_driver_installer_rationale_43",
+      "src_driver_installer_rationale_438",
+      "src_driver_installer_rationale_50",
+      "src_driver_installer_rationale_69",
+      "src_driver_installer_read_manifest",
+      "src_driver_installer_restore_driver_backup_folder",
+      "src_driver_installer_subject_organization",
+      "src_driver_installer_verify_signature",
+      "src_gui_drivermanagergui_task_msi_mode",
+      "subprocess",
+      "urllib_parse",
+      "winreg"
+    ],
+    "4": [
+      "ctypes",
+      "customtkinter",
+      "image",
+      "logging",
+      "logging_handlers",
+      "math",
+      "photoimage",
+      "pil",
+      "pythoncom",
+      "site",
+      "src_gui",
+      "src_gui_build_auralis_background",
+      "src_gui_moderneventinterceptor",
+      "src_gui_moderneventinterceptor_flush",
+      "src_gui_moderneventinterceptor_init",
+      "src_gui_moderneventinterceptor_write",
+      "src_gui_rationale_155",
+      "src_gui_render_toast_graphic",
+      "threading",
+      "tkinter",
+      "traceback"
+    ],
+    "5": [
+      "bs4",
+      "concurrent_futures",
+      "rich_progress",
+      "src_deep_catalog",
+      "src_deep_catalog_deep_scan_peripherals",
+      "src_deep_catalog_extract_generic_hwid",
+      "src_deep_catalog_extract_specific_hwid",
+      "src_deep_catalog_parse_wmi_date",
+      "src_deep_catalog_rationale_220",
+      "src_deep_catalog_rationale_88",
+      "typing"
+    ],
+    "6": [
+      "re",
+      "src_deep_catalog_is_foreign_architecture",
+      "src_deep_catalog_published_driver_names",
+      "src_deep_catalog_rationale_49",
+      "src_deep_catalog_rationale_96",
+      "src_driver_cleanup_rationale_29",
+      "src_driver_cleanup_rationale_63",
+      "src_driver_cleanup_select_obsolete",
+      "src_driver_cleanup_version_key"
+    ],
+    "7": [
+      "datetime",
+      "src_deep_catalog_ignore_key",
+      "src_deep_catalog_parse_catalog_date",
+      "src_deep_catalog_provider_matches",
+      "src_deep_catalog_query_ms_catalog",
+      "src_deep_catalog_rationale_104",
+      "src_deep_catalog_rationale_136",
+      "src_deep_catalog_rationale_34"
+    ],
+    "8": [
+      "client",
+      "namedtuple",
+      "src_deep_catalog_catalogresult",
+      "src_deep_catalog_check_device",
+      "src_deep_catalog_download_and_extract",
+      "src_deep_catalog_rationale_208",
+      "src_deep_catalog_rationale_323"
+    ],
+    "9": [
+      "json",
+      "src_deep_catalog_add_ignored_update",
+      "src_deep_catalog_install_catalog_cab_updates",
+      "src_deep_catalog_load_ignored_updates",
+      "src_deep_catalog_oem_infs",
+      "src_deep_catalog_rationale_317",
+      "src_deep_catalog_rationale_342"
+    ],
+    "10": [
+      "os",
+      "pathlib",
+      "src_config",
+      "src_config_rationale_1",
+      "tests_conftest",
+      "tests_conftest_rationale_1",
+      "types"
+    ]
+  },
+  "cohesion": {
+    "0": 0.10420168067226891,
+    "1": 0.11229946524064172,
+    "2": 0.12315270935960591,
+    "3": 0.1339031339031339,
+    "4": 0.09523809523809523,
+    "5": 0.23636363636363636,
+    "6": 0.25,
+    "7": 0.2857142857142857,
+    "8": 0.2857142857142857,
+    "9": 0.38095238095238093,
+    "10": 0.2857142857142857
+  },
+  "gods": [
+    {
+      "id": "src_gui_drivermanagergui",
+      "label": "DriverManagerGUI",
+      "degree": 25
+    },
+    {
+      "id": "src_deep_catalog_install_catalog_cab_updates",
+      "label": "install_catalog_cab_updates()",
+      "degree": 16
+    },
+    {
+      "id": "src_driver_installer_backup_current_drivers",
+      "label": "backup_current_drivers()",
+      "degree": 16
+    },
+    {
+      "id": "src_main_main",
+      "label": "main()",
+      "degree": 16
+    },
+    {
+      "id": "src_deep_catalog_deep_scan_peripherals",
+      "label": "deep_scan_peripherals()",
+      "degree": 13
+    },
+    {
+      "id": "src_deep_catalog_query_ms_catalog",
+      "label": "query_ms_catalog()",
+      "degree": 10
+    },
+    {
+      "id": "src_driver_installer_install_nvidia_driver",
+      "label": "install_nvidia_driver()",
+      "degree": 10
+    },
+    {
+      "id": "tests_test_core_table_client",
+      "label": "_table_client()",
+      "degree": 9
+    },
+    {
+      "id": "src_driver_cleanup_find_obsolete_driver_packages",
+      "label": "find_obsolete_driver_packages()",
+      "degree": 8
+    },
+    {
+      "id": "src_driver_installer_download_file",
+      "label": "download_file()",
+      "degree": 8
+    }
+  ],
+  "surprises": [
+    {
+      "source": "main()",
+      "target": "deep_scan_peripherals()",
+      "source_files": [
+        "src/main.py",
+        "src/deep_catalog.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "main()",
+      "target": "install_catalog_cab_updates()",
+      "source_files": [
+        "src/main.py",
+        "src/deep_catalog.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "main()",
+      "target": "backup_current_drivers()",
+      "source_files": [
+        "src/main.py",
+        "src/driver_installer.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "main()",
+      "target": "install_nvidia_driver()",
+      "source_files": [
+        "src/main.py",
+        "src/driver_installer.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "main()",
+      "target": "find_obsolete_driver_packages()",
+      "source_files": [
+        "src/main.py",
+        "src/driver_cleanup.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

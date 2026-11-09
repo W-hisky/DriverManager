@@ -1,0 +1,218 @@
+{
+  "src/config.py": {
+    "mtime": 1794225508.2221227,
+    "seen": 1794225556.7666445,
+    "ast_hash": "4d8304ee75ad116da822b9666cd0d17b",
+    "semantic_hash": ""
+  },
+  "src/deep_catalog.py": {
+    "mtime": 1794187299.2137544,
+    "seen": 1794188068.785613,
+    "ast_hash": "3569b752ebf3373f6dd96d32c90b8b2b",
+    "semantic_hash": ""
+  },
+  "src/driver_cleanup.py": {
+    "mtime": 1794184261.1705036,
+    "seen": 1794184951.7273343,
+    "ast_hash": "633f2b8985d865e4449168308c5e999a",
+    "semantic_hash": ""
+  },
+  "src/driver_installer.py": {
+    "mtime": 1794184808.2066872,
+    "seen": 1794184951.7273343,
+    "ast_hash": "a4eee2e3357e26bbaec9e454e8953143",
+    "semantic_hash": ""
+  },
+  "src/driver_scanner.py": {
+    "mtime": 1794185394.496915,
+    "seen": 1794185943.2470007,
+    "ast_hash": "541075363701ce2e678bb16bb0827dcf",
+    "semantic_hash": ""
+  },
+  "src/gui.py": {
+    "mtime": 1794223942.3444662,
+    "seen": 1794224009.3348002,
+    "ast_hash": "f76bcfe7075cc31030e010bdfd0a4c38",
+    "semantic_hash": ""
+  },
+  "src/main.py": {
+    "mtime": 1794185394.496399,
+    "seen": 1794185943.2470007,
+    "ast_hash": "ecd2c816db892e0c15d3e5902dd6cfdc",
+    "semantic_hash": ""
+  },
+  "tests/conftest.py": {
+    "mtime": 1794184643.6668737,
+    "seen": 1794184951.7273343,
+    "ast_hash": "fa970bcd4ec161e7db75352618984258",
+    "semantic_hash": ""
+  },
+  "tests/test_core.py": {
+    "mtime": 1794187336.9112546,
+    "seen": 1794188068.785613,
+    "ast_hash": "2ebb79e2a31004ba9c7810ff737008db",
+    "semantic_hash": ""
+  },
+  "src/driver_history.py": {
+    "mtime": 1794184294.921759,
+    "seen": 1794184951.7273343,
+    "ast_hash": "b3f2b5a3f7ce933964376a9c1b935db5",
+    "semantic_hash": ""
+  },
+  "src/gpu_check.py": {
+    "mtime": 1794184200.8003817,
+    "seen": 1794184951.7273343,
+    "ast_hash": "5b638bcac04f7733e97231cbb160ffab",
+    "semantic_hash": ""
+  },
+  "src/inf_rank.py": {
+    "mtime": 1794184230.61424,
+    "seen": 1794184951.7273343,
+    "ast_hash": "c4efb98eb355fd4d070f238f14a5b8ac",
+    "semantic_hash": ""
+  },
+  "tests/test_gpu_check.py": {
+    "mtime": 1794178342.5407617,
+    "seen": 1794182971.6209266,
+    "ast_hash": "8c539ad587af9b138769507bb06c7212",
+    "semantic_hash": ""
+  },
+  "tests/test_history.py": {
+    "mtime": 1794182932.571879,
+    "seen": 1794182971.6209266,
+    "ast_hash": "d1343500c959c614aa7220694678b1ab",
+    "semantic_hash": ""
+  },
+  "tests/test_inf_rank.py": {
+    "mtime": 1794175318.5179412,
+    "seen": 1794182971.6209266,
+    "ast_hash": "76e027f2738c70cde6118e934faa4f59",
+    "semantic_hash": ""
+  },
+  ".claude/CLAUDE.md": {
+    "mtime": 1794172600.5792494,
+    "seen": 1794182971.6209266,
+    "ast_hash": "9b31786b637be3c13978bec4c2330752",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1794172600.5854404,
+    "seen": 1794182971.6209266,
+    "ast_hash": "67d88e9d0760c3ba54c75dfd9551c1c5",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1794225539.2533064,
+    "seen": 1794225556.7671592,
+    "ast_hash": "cdb91819004019c4a64fbfc3c734930f",
+    "semantic_hash": ""
+  },
+  "requirements-dev.txt": {
+    "mtime": 1794183693.144182,
+    "seen": 1794183697.0924408,
+    "ast_hash": "96a0dd24b0507131262d38c89ac9531c",
+    "semantic_hash": ""
+  },
+  "requirements.txt": {
+    "mtime": 1794161539.815682,
+    "seen": 1794182971.6209266,
+    "ast_hash": "e7168c6bb6e28463411cab6583b7c485",
+    "semantic_hash": ""
+  },
+  "src/auto_scan.py": {
+    "mtime": 1794187551.1319456,
+    "seen": 1794188068.785613,
+    "ast_hash": "dbeb067aed63660a12c24bb57dcf2e58",
+    "semantic_hash": ""
+  },
+  "tests/test_auto_scan.py": {
+    "mtime": 1794183220.8318155,
+    "seen": 1794183305.9160256,
+    "ast_hash": "196bef273058f5205082b5d4a479e3b2",
+    "semantic_hash": ""
+  },
+  "build.py": {
+    "mtime": 1794225537.6707206,
+    "seen": 1794225556.7666445,
+    "ast_hash": "b77228ac72eff607a74ae2f755ffbe27",
+    "semantic_hash": ""
+  },
+  "src/i18n.py": {
+    "mtime": 1794184224.3376565,
+    "seen": 1794184951.7273343,
+    "ast_hash": "7d4538ccd297579d00ceaf488410262e",
+    "semantic_hash": ""
+  },
+  "src/locale_en.py": {
+    "mtime": 1794223824.9759154,
+    "seen": 1794224009.3348002,
+    "ast_hash": "87ac749b84f4df6efecf4343a5dc72cb",
+    "semantic_hash": ""
+  },
+  "tests/test_i18n.py": {
+    "mtime": 1794184659.4027412,
+    "seen": 1794184951.7273343,
+    "ast_hash": "2ab7ce0d75977b83fc0c3852bb455160",
+    "semantic_hash": ""
+  },
+  "src/wmi_fast.py": {
+    "mtime": 1794223703.7901015,
+    "seen": 1794224009.3348002,
+    "ast_hash": "70cbd55fda52dee84acd030b8e4228f8",
+    "semantic_hash": ""
+  },
+  "src/ignore_list.py": {
+    "mtime": 1794187296.5896704,
+    "seen": 1794188068.785613,
+    "ast_hash": "aad048066720d456012f168ba8286451",
+    "semantic_hash": ""
+  },
+  "src/single_instance.py": {
+    "mtime": 1794187500.8773167,
+    "seen": 1794188068.785613,
+    "ast_hash": "45d9c4f92b0fea41ef473030a976ce84",
+    "semantic_hash": ""
+  },
+  "src/wu_drivers.py": {
+    "mtime": 1794187381.7259586,
+    "seen": 1794188068.785613,
+    "ast_hash": "4b3318284718c189250fb29a8582b569",
+    "semantic_hash": ""
+  },
+  "tests/test_ignore_list.py": {
+    "mtime": 1794187337.721933,
+    "seen": 1794188068.785613,
+    "ast_hash": "5d8108411110ed177369ef02d4abd0d8",
+    "semantic_hash": ""
+  },
+  "tests/test_wu.py": {
+    "mtime": 1794187590.309482,
+    "seen": 1794188068.785613,
+    "ast_hash": "2a885247cca595ff5abb1b6d3501702a",
+    "semantic_hash": ""
+  },
+  "src/diagnostics.py": {
+    "mtime": 1794223704.5853436,
+    "seen": 1794224009.3348002,
+    "ast_hash": "8d256980b9016d1851b3f171e916d343",
+    "semantic_hash": ""
+  },
+  "src/prefs.py": {
+    "mtime": 1794223687.8292968,
+    "seen": 1794224009.3348002,
+    "ast_hash": "0957d62c6e3f142399fb59089a0d6da7",
+    "semantic_hash": ""
+  },
+  "src/updater.py": {
+    "mtime": 1794223730.3986936,
+    "seen": 1794224009.3348002,
+    "ast_hash": "71b22099eaf89c391dd9e4d278a82ea5",
+    "semantic_hash": ""
+  },
+  "tests/test_updater.py": {
+    "mtime": 1794225538.4674087,
+    "seen": 1794225556.7671592,
+    "ast_hash": "7dd71015d116cfc545ffc735a28efa4f",
+    "semantic_hash": ""
+  }
+}

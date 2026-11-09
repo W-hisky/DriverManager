@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+logs/
+backups/
+downloads/
+package_verdicts.json
+ignored_updates.json
+driver_history.json
+settings.json
+last_auto_scan.json
+build/
+dist/

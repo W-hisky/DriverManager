@@ -1,0 +1,8 @@
+beautifulsoup4==4.15.0
+customtkinter==6.0.0
+httpx==0.28.1
+packaging==26.3
+pillow==13.0.0
+pywin32==312
+rich==15.0.0
+WMI==1.5.1
