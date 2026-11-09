@@ -1,8 +1,8 @@
 {
   "src/config.py": {
-    "mtime": 1794226953.076099,
-    "seen": 1794226999.636035,
-    "ast_hash": "d58db32ebc9f49b87b2bcbf782af7c61",
+    "mtime": 1794232394.4678426,
+    "seen": 1794246374.4947073,
+    "ast_hash": "becf73c9e4e65ade0144d8ee7edb4699",
     "semantic_hash": ""
   },
   "src/deep_catalog.py": {
@@ -18,9 +18,9 @@
     "semantic_hash": ""
   },
   "src/driver_installer.py": {
-    "mtime": 1794226883.350869,
-    "seen": 1794226999.636035,
-    "ast_hash": "a4eee2e3357e26bbaec9e454e8953143",
+    "mtime": 1794246114.2035306,
+    "seen": 1794246374.4947073,
+    "ast_hash": "f42f792d050df5457b5ba6f428cbfcfd",
     "semantic_hash": ""
   },
   "src/driver_scanner.py": {
@@ -30,9 +30,9 @@
     "semantic_hash": ""
   },
   "src/gui.py": {
-    "mtime": 1794231492.5310507,
-    "seen": 1794231998.2087934,
-    "ast_hash": "2cfcb5cc2594102afce7d8109131ec3d",
+    "mtime": 1794246556.963289,
+    "seen": 1794246601.8267477,
+    "ast_hash": "aa119e8bd452434db8e52366cbe35b17",
     "semantic_hash": ""
   },
   "src/main.py": {
@@ -48,9 +48,9 @@
     "semantic_hash": ""
   },
   "tests/test_core.py": {
-    "mtime": 1794187336.9112546,
-    "seen": 1794188068.785613,
-    "ast_hash": "2ebb79e2a31004ba9c7810ff737008db",
+    "mtime": 1794246135.7853649,
+    "seen": 1794246374.4947073,
+    "ast_hash": "4a5239c81ef18edf8c8a11cc7242d829",
     "semantic_hash": ""
   },
   "src/driver_history.py": {
@@ -144,9 +144,9 @@
     "semantic_hash": ""
   },
   "src/locale_en.py": {
-    "mtime": 1794231506.3555758,
-    "seen": 1794231998.2087934,
-    "ast_hash": "0cfed944e8070513b8c9109d218e8b93",
+    "mtime": 1794246118.0187514,
+    "seen": 1794246374.4947073,
+    "ast_hash": "c66d8c224ecb4448bde9b9e9c8fd32b7",
     "semantic_hash": ""
   },
   "tests/test_i18n.py": {
@@ -225,6 +225,18 @@
     "mtime": 1794231530.11706,
     "seen": 1794231998.2087934,
     "ast_hash": "29411037fd0750d0003299d46a0840ba",
+    "semantic_hash": ""
+  },
+  "src/theme.py": {
+    "mtime": 1794246536.6826425,
+    "seen": 1794246601.8267477,
+    "ast_hash": "2ad367ba4992d58cccfb83c66d492f47",
+    "semantic_hash": ""
+  },
+  "src/widgets.py": {
+    "mtime": 1794246536.6831555,
+    "seen": 1794246601.8267477,
+    "ast_hash": "6d6d3e590b3c4bdb47c49759056bd02e",
     "semantic_hash": ""
   }
 }

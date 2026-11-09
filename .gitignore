@@ -13,3 +13,9 @@ last_auto_scan.json
 build/
 dist/
 .focus_request
+
+# graphify: cache e percorsi di questa macchina (il grafo resta in git)
+graphify-out/cache/
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/.cloud-cta-shown
