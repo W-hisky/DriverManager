@@ -314,6 +314,80 @@ try:
                 self._id = None
             self._release()
 
+    def composited(win) -> None:
+        """Disegno a doppio buffer di tutta la finestra (WS_EX_COMPOSITED).
+
+        Senza, scorrendo Windows copia i pixel già disegnati (ScrollWindowEx) e poi ridisegna i singoli widget uno
+        alla volta: per qualche frame si vedono righe stirate e testo "allungato". Con il doppio buffer ogni frame
+        arriva sullo schermo completo.
+        """
+        try:
+            user32 = ctypes.windll.user32
+            hwnd = user32.GetParent(win.winfo_id())
+            get = getattr(user32, "GetWindowLongPtrW", user32.GetWindowLongW)
+            put = getattr(user32, "SetWindowLongPtrW", user32.SetWindowLongW)
+            get.restype = put.restype = ctypes.c_ssize_t
+            get.argtypes = (ctypes.wintypes.HWND, ctypes.c_int)
+            put.argtypes = (ctypes.wintypes.HWND, ctypes.c_int, ctypes.c_ssize_t)
+            put(hwnd, -20, get(hwnd, -20) | 0x02000000)  # GWL_EXSTYLE |= WS_EX_COMPOSITED
+        except Exception:
+            pass
+
+    class SmoothScrollFrame(ctk.CTkScrollableFrame):
+        """Rotellina con scorrimento fluido: la pagina rallenta dolcemente verso il punto di arrivo (~60 fps)
+        invece di saltare di 20 px a ogni scatto. Scatti ravvicinati si sommano, come su macOS."""
+        STEP_PX = 96       # pixel per scatto della rotellina (120 di delta)
+        FOLLOW = 0.22      # frazione della distanza residua percorsa in un frame da 16,7 ms
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self._target = None
+            self._pos = 0.0
+            self._scroll_id = None
+            self._last = 0.0
+
+        def _content_height(self) -> float:
+            region = str(self._parent_canvas.cget("scrollregion")).split()
+            return float(region[3]) - float(region[1]) if len(region) == 4 else 0.0
+
+        def _max_top(self) -> float:
+            return max(0.0, self._content_height() - self._parent_canvas.winfo_height())
+
+        def _mouse_wheel_all(self, event):
+            if self._shift_pressed or not sys.platform.startswith("win") or not ANIMATE:
+                return super()._mouse_wheel_all(event)
+            if not self._check_if_valid_scroll(event.widget) or self._parent_canvas.yview() == (0.0, 1.0):
+                return
+            if self._scroll_id is None:  # parte da dove si trova ora (anche se spostata con la barra)
+                self._pos = self._parent_canvas.canvasy(0)
+                self._target = self._pos
+            self._target = min(self._max_top(), max(0.0, self._target - event.delta / 120 * self.STEP_PX))
+            if self._scroll_id is None:
+                SmoothTimer.acquire()
+                self._last = time.perf_counter()
+                self._scroll_tick()
+
+        def _scroll_tick(self):
+            now = time.perf_counter()
+            frames = max(1.0, (now - self._last) * 60)  # se un frame arriva tardi si recupera il ritardo
+            self._last = now
+            diff = self._target - self._pos
+            if abs(diff) < 1.5:  # ultimo pixel e mezzo: si arriva subito invece di strisciare
+                self._pos = self._target
+            else:
+                self._pos += diff * (1 - (1 - self.FOLLOW) ** frames)
+            total = self._content_height()
+            try:
+                if total > 0:
+                    self._parent_canvas.yview_moveto(round(self._pos) / total)
+            except tk.TclError:
+                self._pos = self._target
+            if self._pos == self._target:
+                self._scroll_id = None
+                SmoothTimer.release()
+            else:
+                self._scroll_id = self.after(FRAME_MS, self._scroll_tick)
+
     class Switch(ctk.CTkLabel):
         """Interruttore disegnato con Pillow (bordi lisci) con pomello a molla."""
         W, H, S = 48, 28, 4  # dimensioni e fattore di sovracampionamento
@@ -499,6 +573,7 @@ try:
                 _c.width = 400  # Rich andrebbe a capo a 80 colonne spezzando le righe nei log e nei toast
 
             dark_title_bar(self)
+            composited(self)
             self.after(40, self._intro)
             self.run_in_background(self._task_full_scan, tr("Scansione in corso"))
 
@@ -578,7 +653,7 @@ try:
             self._sep(self).grid(row=1, column=0, sticky="ew")
 
         def _build_body(self):
-            self.body = ctk.CTkScrollableFrame(
+            self.body = SmoothScrollFrame(
                 self, fg_color=C["bg"], corner_radius=0,
                 scrollbar_button_color=C["line_hover"], scrollbar_button_hover_color=C["muted"],
             )
@@ -1171,12 +1246,12 @@ try:
             win.title(tr("Aggiornamenti ignorati"))
             win.geometry("620x520")
             win.transient(self)
-            win.after(10, lambda: dark_title_bar(win))
+            win.after(10, lambda: (dark_title_bar(win), composited(win)))
             win.after(50, win.grab_set)  # finestra modale: subito dopo la creazione su Windows
             self._label(win, tr("Aggiornamenti ignorati"), 20, "bold").pack(anchor="w", padx=28, pady=(24, 2))
             self._label(win, tr("Ripristina una voce per vederla di nuovo alla prossima scansione."), 13, "regular",
                         C["text2"]).pack(anchor="w", padx=28)
-            box = ctk.CTkScrollableFrame(win, fg_color=C["surface"], corner_radius=16, border_width=1,
+            box = SmoothScrollFrame(win, fg_color=C["surface"], corner_radius=16, border_width=1,
                                          border_color=C["line"], scrollbar_button_color=C["line_hover"])
             box.pack(fill="both", expand=True, padx=24, pady=(16, 24))
             self._fill_ignored(box)
