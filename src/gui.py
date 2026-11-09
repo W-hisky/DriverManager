@@ -80,6 +80,7 @@ try:
     import updater
     import ignore_list
     from ignore_list import load_ignored_updates
+    import _tkinter
     import tkinter as tk
     import tkinter.font as tkfont
     from tkinter import filedialog, messagebox
@@ -314,28 +315,9 @@ try:
                 self._id = None
             self._release()
 
-    def composited(win) -> None:
-        """Disegno a doppio buffer di tutta la finestra (WS_EX_COMPOSITED).
-
-        Senza, scorrendo Windows copia i pixel già disegnati (ScrollWindowEx) e poi ridisegna i singoli widget uno
-        alla volta: per qualche frame si vedono righe stirate e testo "allungato". Con il doppio buffer ogni frame
-        arriva sullo schermo completo.
-        """
-        try:
-            user32 = ctypes.windll.user32
-            hwnd = user32.GetParent(win.winfo_id())
-            get = getattr(user32, "GetWindowLongPtrW", user32.GetWindowLongW)
-            put = getattr(user32, "SetWindowLongPtrW", user32.SetWindowLongW)
-            get.restype = put.restype = ctypes.c_ssize_t
-            get.argtypes = (ctypes.wintypes.HWND, ctypes.c_int)
-            put.argtypes = (ctypes.wintypes.HWND, ctypes.c_int, ctypes.c_ssize_t)
-            put(hwnd, -20, get(hwnd, -20) | 0x02000000)  # GWL_EXSTYLE |= WS_EX_COMPOSITED
-        except Exception:
-            pass
-
     class SmoothScrollFrame(ctk.CTkScrollableFrame):
-        """Rotellina con scorrimento fluido: la pagina rallenta dolcemente verso il punto di arrivo (~60 fps)
-        invece di saltare di 20 px a ogni scatto. Scatti ravvicinati si sommano, come su macOS."""
+        """Rotellina con scorrimento fluido: la pagina rallenta dolcemente verso il punto di arrivo, a ritmo con
+        il monitor, invece di saltare di 20 px a ogni scatto. Scatti ravvicinati si sommano, come su macOS."""
         STEP_PX = 96       # pixel per scatto della rotellina (120 di delta)
         FOLLOW = 0.22      # frazione della distanza residua percorsa in un frame da 16,7 ms
 
@@ -367,7 +349,55 @@ try:
                 self._last = time.perf_counter()
                 self._scroll_tick()
 
+        def _blank_strip(self, moved: int):
+            """Riempie col colore di sfondo la striscia appena entrata dal bordo (meno di 0,1 ms).
+
+            Spostando il contenuto Windows copia i pixel già disegnati; la striscia nuova resta con le righe vecchie
+            finché Tk non la ridisegna (~10 ms). Su un monitor a 200 Hz lo schermo si aggiorna nel frattempo e si
+            vede testo duplicato e "stirato". Con la striscia vuota, nel caso peggiore il bordo resta vuoto per
+            un fotogramma: non si nota.
+            """
+            if not moved:
+                return
+            cv = self._parent_canvas
+            w, h = cv.winfo_width(), cv.winfo_height()
+            n = min(h, abs(moved) + 2)
+            top = h - n if moved > 0 else 0
+            u, g = ctypes.windll.user32, ctypes.windll.gdi32
+            hwnd = cv.winfo_id()
+            hdc = u.GetDCEx(hwnd, None, 0x2)  # DCX_CACHE: disegna anche sopra le finestre figlie
+            if not hdc:
+                return
+            try:
+                r, gg, bb = (v >> 8 for v in cv.winfo_rgb(cv.cget("bg")))
+                brush = g.CreateSolidBrush(r | (gg << 8) | (bb << 16))
+                rect = ctypes.wintypes.RECT(0, top, w, top + n)
+                u.FillRect(hdc, ctypes.byref(rect), brush)
+                g.DeleteObject(brush)
+            finally:
+                u.ReleaseDC(hwnd, hdc)
+            # i widget sotto la striscia non sanno di essere stati coperti: vanno ridisegnati (RDW_INVALIDATE |
+            # RDW_ALLCHILDREN; il ridisegno vero e proprio lo fa _paint_now con RDW_UPDATENOW)
+            u.RedrawWindow(hwnd, ctypes.byref(rect), None, 0x0001 | 0x0080)
+
+        def _paint_now(self, moved: int):
+            """Sposta e ridisegna subito, nello stesso fotogramma (Tk lo farebbe al giro successivo)."""
+            self.update_idletasks()  # sposta il contenuto
+            try:
+                self._blank_strip(moved)
+                hwnd = ctypes.windll.user32.GetParent(self.winfo_toplevel().winfo_id())
+                ctypes.windll.user32.RedrawWindow(hwnd, None, None, 0x0100 | 0x0080)  # UPDATENOW | ALLCHILDREN
+            except Exception:
+                return
+            while self.tk.dooneevent(_tkinter.WINDOW_EVENTS | _tkinter.DONT_WAIT):  # eventi Expose generati sopra
+                pass
+            self.update_idletasks()  # ridisegno dei widget esposti
+
         def _scroll_tick(self):
+            try:
+                ctypes.windll.dwmapi.DwmFlush()  # attende l'aggiornamento dello schermo: si parte a inizio fotogramma
+            except Exception:
+                pass
             now = time.perf_counter()
             frames = max(1.0, (now - self._last) * 60)  # se un frame arriva tardi si recupera il ritardo
             self._last = now
@@ -379,14 +409,17 @@ try:
             total = self._content_height()
             try:
                 if total > 0:
+                    before = round(self._parent_canvas.canvasy(0))
                     self._parent_canvas.yview_moveto(round(self._pos) / total)
+                    self._paint_now(round(self._parent_canvas.canvasy(0)) - before)
             except tk.TclError:
                 self._pos = self._target
             if self._pos == self._target:
                 self._scroll_id = None
                 SmoothTimer.release()
             else:
-                self._scroll_id = self.after(FRAME_MS, self._scroll_tick)
+                # il ritmo lo dà DwmFlush (frequenza del monitor), non un timer fisso
+                self._scroll_id = self.after(1, self._scroll_tick)
 
     class Switch(ctk.CTkLabel):
         """Interruttore disegnato con Pillow (bordi lisci) con pomello a molla."""
@@ -573,7 +606,6 @@ try:
                 _c.width = 400  # Rich andrebbe a capo a 80 colonne spezzando le righe nei log e nei toast
 
             dark_title_bar(self)
-            composited(self)
             self.after(40, self._intro)
             self.run_in_background(self._task_full_scan, tr("Scansione in corso"))
 
@@ -1246,7 +1278,7 @@ try:
             win.title(tr("Aggiornamenti ignorati"))
             win.geometry("620x520")
             win.transient(self)
-            win.after(10, lambda: (dark_title_bar(win), composited(win)))
+            win.after(10, lambda: dark_title_bar(win))
             win.after(50, win.grab_set)  # finestra modale: subito dopo la creazione su Windows
             self._label(win, tr("Aggiornamenti ignorati"), 20, "bold").pack(anchor="w", padx=28, pady=(24, 2))
             self._label(win, tr("Ripristina una voce per vederla di nuovo alla prossima scansione."), 13, "regular",
