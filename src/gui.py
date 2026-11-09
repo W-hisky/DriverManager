@@ -321,12 +321,57 @@ try:
         STEP_PX = 96       # pixel per scatto della rotellina (120 di delta)
         FOLLOW = 0.22      # frazione della distanza residua percorsa in un frame da 16,7 ms
 
+        FOLLOW_DRAG = 0.55  # con la barra: la pagina segue il cursore quasi subito, con un filo di morbidezza
+
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self._target = None
             self._pos = 0.0
             self._scroll_id = None
             self._last = 0.0
+            self._follow = self.FOLLOW
+            self._dragging = False
+            if sys.platform.startswith("win") and ANIMATE:
+                # anche la barra passa dallo scorrimento fluido (prima spostava la pagina di colpo)
+                self._scrollbar.configure(command=self._on_scrollbar)
+                self._parent_canvas.configure(yscrollcommand=self._on_canvas_scrolled)
+                self._scrollbar.bind("<ButtonPress-1>", lambda e: setattr(self, "_dragging", True))
+                self._scrollbar.bind("<ButtonRelease-1>", self._drag_end)
+
+        def _on_canvas_scrolled(self, first, last):
+            # mentre si trascina, il cursore lo muove la barra stessa: la pagina, che arriva un attimo dopo,
+            # non deve riportarlo indietro (tremolio)
+            if not self._dragging:
+                self._scrollbar.set(first, last)
+
+        def _drag_end(self, _event=None):
+            self._dragging = False
+            self._scrollbar.set(*self._parent_canvas.yview())
+
+        def _on_scrollbar(self, *args):
+            if args and args[0] == "moveto":
+                self._glide_to(float(args[1]) * self._content_height(), self.FOLLOW_DRAG)
+            elif args and args[0] == "scroll" and len(args) == 3 and args[2] == "units":
+                # rotellina sopra la barra: CTkScrollbar manda -delta/40 unità
+                self._glide_to(self._base() + int(args[1]) * self.STEP_PX / 3, self.FOLLOW)
+            else:
+                self._parent_canvas.yview(*args)
+
+        def _base(self) -> float:
+            """Punto di partenza: la destinazione in corso, o la posizione attuale se la pagina è ferma."""
+            return self._target if self._scroll_id is not None else self._parent_canvas.canvasy(0)
+
+        def _glide_to(self, top: float, follow: float):
+            if self._parent_canvas.yview() == (0.0, 1.0):
+                return
+            if self._scroll_id is None:  # parte da dove si trova ora
+                self._pos = self._parent_canvas.canvasy(0)
+            self._target = min(self._max_top(), max(0.0, top))
+            self._follow = follow
+            if self._scroll_id is None:
+                SmoothTimer.acquire()
+                self._last = time.perf_counter()
+                self._scroll_tick()
 
         def _content_height(self) -> float:
             region = str(self._parent_canvas.cget("scrollregion")).split()
@@ -338,16 +383,8 @@ try:
         def _mouse_wheel_all(self, event):
             if self._shift_pressed or not sys.platform.startswith("win") or not ANIMATE:
                 return super()._mouse_wheel_all(event)
-            if not self._check_if_valid_scroll(event.widget) or self._parent_canvas.yview() == (0.0, 1.0):
-                return
-            if self._scroll_id is None:  # parte da dove si trova ora (anche se spostata con la barra)
-                self._pos = self._parent_canvas.canvasy(0)
-                self._target = self._pos
-            self._target = min(self._max_top(), max(0.0, self._target - event.delta / 120 * self.STEP_PX))
-            if self._scroll_id is None:
-                SmoothTimer.acquire()
-                self._last = time.perf_counter()
-                self._scroll_tick()
+            if self._check_if_valid_scroll(event.widget):
+                self._glide_to(self._base() - event.delta / 120 * self.STEP_PX, self.FOLLOW)
 
         def _blank_strip(self, moved: int):
             """Riempie col colore di sfondo la striscia appena entrata dal bordo (meno di 0,1 ms).
@@ -405,7 +442,7 @@ try:
             if abs(diff) < 1.5:  # ultimo pixel e mezzo: si arriva subito invece di strisciare
                 self._pos = self._target
             else:
-                self._pos += diff * (1 - (1 - self.FOLLOW) ** frames)
+                self._pos += diff * (1 - (1 - self._follow) ** frames)
             total = self._content_height()
             try:
                 if total > 0:
